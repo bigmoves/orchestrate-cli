@@ -227,8 +227,7 @@ Returns friends of Wayne's friends.
 
 ### Put
 
-`orchestrate put-relation <collection> <key> <kind> <toCollection>
-<toKey>`
+`orchestrate put-relation <collection> <key> <kind> <toCollection> <toKey>`
 
 Creates a relationship between two objects. Relations can span collections.
 
@@ -238,8 +237,7 @@ Example:
 
 ### Delete
 
-`orchestrate delete-relation <collection> <kind> <toCollection>
-<toKey>`
+`orchestrate delete-relation <collection> <kind> <toCollection> <toKey>`
 
 Deletes a relationship between two objects.
 
