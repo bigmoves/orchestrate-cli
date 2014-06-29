@@ -1,33 +1,27 @@
-Orchestrate Cli
+orchestrate-cli
 ===============
 
-A command line utility for [Orchestrate.io](http://orchestrate.io).
+A command line interface for the [Orchestrate.io](http://orchestrate.io) API.
 
-Installation
-============
+Built with the Orchestrate [Node Client](https://github.com/orchestrate-io/orchestrate.js).
 
-`npm install -g orchestrate-cli`
+## Installation
 
-Using Orchestrate-Cli
-====================
+```
+npm install -g orchestrate-cli
+```
 
-In order to interact with Orchestrate's api, you need to have a valid
-API key. An API key is specific to an application and can be found on
-Orchestrate's dashboard page once you setup an account. Once you have a
-valid API key, set it as an evironment variable on your path with the
-following command:
+## Getting Started
 
-`export ORCHESTRATE_API_KEY=key`
+Set your API key as an environment variable on your current path.
 
-Now, every time you run a command you'll be working with a specific
-application. If you want to work on a different application, just run the
-command again with a new api key.
+```
+export ORCHESTRATE_API_KEY=token
+```
 
-Complete documentation for the api can be found [here](https://orchestrate.io/docs/api/).
+### Output
 
-# Output
-
-Responses from Orchestrate are formatted using the [prettyjson](https://github.com/rafeca/prettyjson) package, which formats json in a coloured YAML-style.
+orchestrate-cli formats responses from Orchestrate using the [prettyjson](https://github.com/rafeca/prettyjson) npm package, which makes JSON responses easier to read in the command-line.
 
 ```
 count:   4
@@ -39,10 +33,15 @@ results:
       ref:        a2b753f69da817d1
     value:
       name: Wayne Campbell
+      location: Aurora, Illinois
     reftime: 1403985744473
   -
   ...
 ```
+
+### API Docs
+
+Complete documentation for the Orchestrate.io API can be found [here](https://orchestrate.io/docs/api/).
 
 # Commands
 
@@ -64,7 +63,7 @@ Prints out help for the specified command.
 
 Get's the latest value assigned to a key.
 
-Example:
+**Example:**
 
 `orchestrate get users wayne`
 
@@ -74,19 +73,21 @@ Example:
 
 Creates or updates the value at the collection/key specified.
 
-Options:
+**Options:**
 
 `-u, --update [ref]`
 
-Stores the value for the key if the value for this header matches the current ref value.
+Stores the value for the key if the specified ref value matches the current ref value.
 
 `-c, --create`
 
 Stores the value for the key if no key/value already exists.
 
-Examples:
+**Examples:**
 
 `orchestrate put users wayne '{"name":"Wayne Campbell"}'`
+
+Note that the json argument must be wrapped with single quotes.
 
 `orchestrate put users wayne '{"name":"Wayne Campbell"}' --update cb02c69c2a7f0df7`
 
@@ -98,11 +99,11 @@ Examples:
 
 Deletes the value of a key to a null object. If the purge parameter is supplied the object and its ref history will be permanently deleted.
 
-Options:
+**Options:**
 
 `-p, --purge`
 
-Example:
+**Example:**
 
 `orchestrate delete users wayne -p`
 
@@ -112,7 +113,7 @@ Example:
 
 Returns a paginated, lexicographically ordered list of items contained in a collection.
 
-Options:
+**Options:**
 
 `-l, --limit [limit]`
 
@@ -122,11 +123,15 @@ the number of results to return. (Default: 10)
 
 the start of the key range to paginate from including the specified value if it exists.
 
-Examples:
+**Examples:**
 
 `orchestrate list users`
 
+Lists the first 10 documents in the users collection.
+
 `orchestrate list users --limit 2 --startKey w`
+
+Limits the results to 2 documents starting from the key "w".
 
 ## Search
 
@@ -134,7 +139,7 @@ Examples:
 
 Returns a list of items in a collection matching a lucene query.
 
-Options:
+**Options:**
 
 `-l, --limit [limit]`
 
@@ -144,20 +149,19 @@ the number of results to return. (default: 10, max: 100)
 
 the starting position of the results. (default: 0)
 
-Examples:
+**Examples:**
 
-`orchestrate search users "*"`
+`orchestrate search users "*" --limit 20`
 
-Returns all users in the collection.
+Searches all documents in the users collection, limiting the results to 20.
 
 `orchestrate search users "Wayne"`
 
-Searches through all of the key/value pairs in a collection for the
-keyword "Garth".
+Searches all documents and values in the users collection for the keyword "Wayne".
 
-`orchestrate search users "value.name: 'Wayne'"`
+`orchestrate search users "value.location: 'Aurora'"`
 
-Only searches by the name key on each item in a collection.
+Searches all documents with value.location matching the keyword.
 
 ## Events
 
@@ -167,15 +171,15 @@ Only searches by the name key on each item in a collection.
 
 Returns an individual event.
 
-Options:
+**Options:**
 
 `-t, --timestamp`
 
 the event timestamp.
 
-Example:
+**Example:**
 
-`orchestrate get-event users wayne update`
+`orchestrate get-event users wayne updates`
 
 ### List
 
@@ -183,7 +187,7 @@ Example:
 
 Returns a paginated list of events, optionally limited to specified time range in reverse chronological order.
 
-Options:
+**Options:**
 
 `-s, --start [start]`
 
@@ -193,13 +197,15 @@ the inclusive start of a range to query.
 
 the non-inclusive start of a range to query.
 
-Example:
+**Example:**
 
 `orchestrate list-events users wayne update`
 
-lists all of the update events for wayne in the users collection
+Lists all of the update events for the key "wayne" in the users collection.
 
 `orchestrate list-events users wayne update -s 1403988738520 -e 1403989963791`
+
+Lists all of the update events for the key "wayne" within a specific time range.
 
 ## Graph
 
@@ -209,21 +215,21 @@ lists all of the update events for wayne in the users collection
 
 Returns relation’s collection, key, ref, and values. The “kind” parameter(s) indicate which relations to walk and the depth to walk.
 
-Options:
+**Options:**
 
 `-w, --walk [kind2]`
 
 the relation to walk to.
 
-Examples:
+**Examples:**
 
 `orchestrate get-graph users wayne friends`
 
-Returns friends of Wayne.
+Lists friends of Wayne.
 
 `orchestrate get-graph users wayne friends -w friends`
 
-Returns friends of Wayne's friends.
+Lists friends of Waynes' friends.
 
 ### Put
 
@@ -231,7 +237,7 @@ Returns friends of Wayne's friends.
 
 Creates a relationship between two objects. Relations can span collections.
 
-Example:
+**Example:**
 
 `orchestrate put-relation users wayne friends users garth`
 
@@ -241,27 +247,38 @@ Example:
 
 Deletes a relationship between two objects.
 
-Example:
+**Example:**
 
 `orchestrate delete-relation users wayne friend users garth`
 
-## Seed
+## Seed data
+
+*Use with caution. Each object in the .json file is uploaded to
+Orchestrate with a separate api request.*
 
 `orchestrate seed <collection> <file> <key>`
 
-Seeds a collection with the contents of a .json file. `<file>` is the path to the file relative to where the command is executed. `<key>` is a property on each of the objects in the .json file to use as the objects' key.
+Seed a collection with the contents of a .json file. `<file>` is the path to the file relative to where the command is executed. `<key>` is a value relative to each of the objects in the .json file to use as the objects' key.
 
-Example:
+**Example:**
 
-`orchestrate seed users users.json name`
+*users.json*
+
+```
+[
+  {
+    "name": "chad",
+    "email": "chadtmiller15@gmail.com"
+  },
+  ...
+]
+```
+
+`orchestrate seed users users.json email`
 
 ## Ping
 
 `orchestrate ping`
 
 Validates the active API key.
-
-
-
-
 
